@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+<body>
+<hl>Flask Chatbot</hl>
+<div>
+<div id = "chatbox">
+<p class = "botText"><span>Hi! I am your Chatterbot.</span></p>
+</div>
+<div id = "userInput">
+<input id = "textInput" type="text" name="msg" placeholder="Message">
+<input id = "buttonInput" type="submit" value="Send">
+<input id = "buttonRecord" type="submit" value="Record">
+</div>
+<script>
+function getBotResponse(){
+var rawText = $("#textInput").val();
+var userHtml = '<p class = "userText"><span>' + rawText + '</span></p>';
+$("#textInput").val("");
+$("#chatbox").append(userHtml);
+document.getElementById('userInput').scrollIntoView({block:'start',behaviour:'smooth'});
+$.get("/get", {msg:rawText}).done(function(data){
+var botHtml = '<p class = "botText"><span>' + data + '</span></p>';
+$("#chatbox").append(botHtml);
+document.getElementId('userInput').scrollIntoView({block:'start',behaviour:'smooth'});
+});
+}
+function getRecord(){
+$.get("/record/user").done(function(data){
+var userHtml = '<p class = "userText"><span>' + "user : " + data.split(':')[0] + '</span></p>';
+var botHtml = '<p class = "botText"><span>' + "bot : " + data.split(':')[1] + '</span></p>';
+$("#chatbox").append(userHtml);
+$("#chatbox").append(botHtml);
+document.getElementId('userInput').scrollIntoView({block:'start',behaviour:'smooth'});
+});
+}
+$("#textInput").keypress(function(e) {
+if(e.which == 13){
+getBotResponse();
+}
+});
+$("#buttonInput").click(function() {
+getBotResponse();
+});
+$("#buttonRecord").click(function() {
+getRecord();
+});
+</script>
+</div>
+</body>
+</html>
